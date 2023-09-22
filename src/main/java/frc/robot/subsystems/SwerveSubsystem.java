@@ -4,8 +4,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,7 +56,8 @@ public class SwerveSubsystem extends SubsystemBase {
     );
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-    
+    //private final SwerveDriveOdometry odemeter = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, new Rotation2d(0));
+
     public SwerveSubsystem() {
         new Thread(() -> {
             try{
@@ -73,10 +77,21 @@ public class SwerveSubsystem extends SubsystemBase {
     public Rotation2d getRotation2d(){
         return Rotation2d.fromDegrees(getHeading());
     }
-
+    /*public Pose2d getPose(){                  
+       return odemeter.getPoseMeters();
+    }
+    public void resetOdemetery(){
+        //odemeter.resetPosition(getRotation2d(), SwerveModulePosition(), getPose());
+    }
+*/
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Robot Heading", getHeading());
+        SmartDashboard.putNumber("Velocity", frontLeft.getDriveVelocity());
+        SmartDashboard.putNumber("turning velocity",frontLeft.getTurningVelocity() );
+        SmartDashboard.putNumber("position", frontLeft.getDrivePosition());
+        SmartDashboard.putNumber("turningPosition", frontLeft.getTurningPosition());
+        //odemeter.update(getRotation2d(), frontLeft.getState(),frontRight.getState(),backLeft.getState(),backRight.getState());
     }
     public void stopModules(){
         frontLeft.stop();
